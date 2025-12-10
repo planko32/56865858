@@ -82,6 +82,7 @@
 
   
   <script src="wallet.js"></script>
+  
   <script>
     (function() {
       var qtyInput = document.getElementById('qtyInput');
@@ -94,6 +95,10 @@
       var availableVal = document.getElementById('availableVal');
 
       var balance = 0;
+
+      var WITHDRAW_FEE_RATE = 0.05;
+      var COOLDOWN_WITHDRAW_DAYS = 3;   // 3 days between withdrawals
+      var COOLDOWN_EARN_HOURS = 3;      // 3 hours after last AI Power earning
 
       function syncBalance() {
         if (window.DemoWallet && typeof window.DemoWallet.getWallet === 'function') {
@@ -109,16 +114,38 @@
       }
 
       function updateValues() {
+        if (!qtyInput) return;
         var v = parseFloat(qtyInput.value);
         if (isNaN(v) || v <= 0) {
           feeVal.textContent = '0';
           recvVal.textContent = '0';
           return;
         }
-        var fee = v * 0.05;
+        var fee = v * WITHDRAW_FEE_RATE;
         var received = v - fee;
         feeVal.textContent = fee.toFixed(2);
         recvVal.textContent = received.toFixed(2);
+      }
+
+      function getLastTxTime(type) {
+        try {
+          if (!window.DemoWallet || typeof DemoWallet.getTransactions !== 'function') {
+            return null;
+          }
+          var txs = DemoWallet.getTransactions() || [];
+          for (var i = 0; i < txs.length; i++) {
+            var tx = txs[i];
+            if (tx && tx.type && tx.type.toLowerCase() === type.toLowerCase() && tx.createdAt) {
+              var d = new Date(tx.createdAt);
+              if (!isNaN(d.getTime())) {
+                return d;
+              }
+            }
+          }
+        } catch (e) {
+          console.warn('getLastTxTime error', e);
+        }
+        return null;
       }
 
       if (qtyInput) {
@@ -134,7 +161,9 @@
 
       if (withdrawBtn) {
         withdrawBtn.addEventListener('click', function() {
-          if (!window.DemoWallet || typeof window.DemoWallet.getWallet !== 'function' || typeof window.DemoWallet.withdraw !== 'function') {
+          if (!window.DemoWallet ||
+              typeof window.DemoWallet.getWallet !== 'function' ||
+              typeof window.DemoWallet.withdraw !== 'function') {
             alert('Internal error: wallet not available.');
             return;
           }
@@ -161,19 +190,57 @@
             return;
           }
 
+          // Check cooldown after last AI Power earning (income)
+          var now = new Date();
+          var lastIncome = getLastTxTime('income');
+          if (lastIncome) {
+            var diffHours = (now - lastIncome) / (1000 * 60 * 60);
+            if (diffHours < COOLDOWN_EARN_HOURS) {
+              alert('You can withdraw only after ' + COOLDOWN_EARN_HOURS +
+                    ' hours from your last AI Power earning.');
+              return;
+            }
+          }
+
+          // Check last withdrawal time (3-day rule)
+          var earlyWithdrawal = false;
+          var lastWithdraw = getLastTxTime('withdraw');
+          if (lastWithdraw) {
+            var diffDays = (now - lastWithdraw) / (1000 * 60 * 60 * 24);
+            if (diffDays < COOLDOWN_WITHDRAW_DAYS) {
+              var confirmEarly = confirm(
+                'You can withdraw once every ' + COOLDOWN_WITHDRAW_DAYS +
+                ' days. If you continue now, the amount will be frozen and the withdrawal may take up to 120 hours.\n\nDo you want to continue?'
+              );
+              if (!confirmEarly) {
+                return;
+              }
+              earlyWithdrawal = true;
+            }
+          }
+
           var result = DemoWallet.withdraw(v);
           if (!result) {
             alert('Withdrawal failed, please try again.');
             return;
           }
 
-          syncBalance();
+          balance = result.balance || 0;
+          maxAvailable = balance;
+          if (availableVal) {
+            availableVal.textContent = balance.toFixed(2) + ' USDT';
+          }
+
           if (qtyInput) {
             qtyInput.value = '';
           }
           updateValues();
 
-          alert('Withdrawal request submitted and is pending review.');
+          if (earlyWithdrawal) {
+            alert('Withdrawal request created. Amount has been frozen and is now pending manual review (up to 120 hours).');
+          } else {
+            alert('Withdrawal request submitted and is pending review (2–120 hours).');
+          }
         });
       }
 
@@ -183,7 +250,9 @@
     })();
   </script>
 
-<script src="auth.js"></script>
+
+
+  <script src="auth.js"></script>
 <script src="common-nav.js"></script>
 </body>
 </html>
