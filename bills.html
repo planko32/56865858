@@ -403,7 +403,7 @@
     }
 
     function applyFilters() {
-      // Always refresh from DemoWallet so new operations appear
+      // Always refresh transactions from DemoWallet so new operations appear
       if (window.DemoWallet && typeof window.DemoWallet.getTransactions === 'function') {
         var latest = DemoWallet.getTransactions() || [];
         allTxs = latest.slice().sort(function(a, b) {
@@ -436,9 +436,8 @@
         if (filters.currency && filters.currency.toUpperCase() !== 'ALL') {
           var filterCurrency = filters.currency.toUpperCase();
           var txCurrency = (tx.currency || 'USDT').toUpperCase();
-
           if (tx.type && tx.type.toLowerCase() === 'swap') {
-            // currency looks like "USDT→USDC" for swaps: match if any side contains chosen currency
+            // For swaps, currency saved as "USDT→USDC", so check if contains filter currency
             if (txCurrency.indexOf(filterCurrency) === -1) return false;
           } else {
             if (txCurrency !== filterCurrency) return false;
