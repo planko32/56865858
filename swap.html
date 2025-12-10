@@ -637,11 +637,18 @@
   function syncFromWallet() {
     if (window.DemoWallet && typeof window.DemoWallet.getWallet === 'function') {
       var w = DemoWallet.getWallet();
-      if (w && typeof w.balance === 'number') {
-        balances.USDT = w.balance;
-        updateBalancesUI();
-        updateExpected();
+      if (w && w.balances) {
+        balances.USDT = Number(w.balances.USDT) || 0;
+        balances.USDC = Number(w.balances.USDC) || 0;
+        balances.BTC  = Number(w.balances.BTC)  || 0;
+        balances.ETH  = Number(w.balances.ETH)  || 0;
+        balances.TRX  = Number(w.balances.TRX)  || 0;
+      } else if (w && typeof w.balance === 'number') {
+        // fallback: only USDT known
+        balances.USDT = Number(w.balance) || 0;
       }
+      updateBalancesUI();
+      updateExpected();
     }
   }
 
