@@ -1,0 +1,315 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Demo Status Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #05070b;
+      color: #f7f7ff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .card {
+      width: 100%;
+      max-width: 460px;
+      background: #10121c;
+      border-radius: 18px;
+      padding: 18px 18px 20px;
+      box-shadow: 0 20px 45px rgba(0,0,0,0.7);
+      border: 1px solid #232638;
+    }
+    h1 {
+      margin: 0 0 4px;
+      font-size: 1.1rem;
+      text-align: center;
+    }
+    .subtitle {
+      text-align: center;
+      font-size: 0.8rem;
+      color: #a6a9be;
+      margin-bottom: 16px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .pill {
+      border-radius: 12px;
+      padding: 10px 10px 9px;
+      background: radial-gradient(circle at top left, #1ac8ff33, #090b13);
+      border: 1px solid #23263a;
+    }
+    .pill-label {
+      font-size: 0.75rem;
+      color: #a5a9c7;
+      margin-bottom: 4px;
+    }
+    .pill-value {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #fefefe;
+    }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 0.75rem;
+      background: #111827;
+      border: 1px solid #27324a;
+      margin-bottom: 10px;
+    }
+    .badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #00e5ff;
+    }
+    .section-title {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin: 10px 0 6px;
+      color: #8b8fb0;
+    }
+    .list {
+      border-radius: 12px;
+      background: #090b14;
+      border: 1px solid #232638;
+      padding: 10px 11px 8px;
+      font-size: 0.8rem;
+    }
+    .list-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 0;
+    }
+    .list-label {
+      color: #9ea2be;
+    }
+    .list-value {
+      font-weight: 500;
+      color: #fdfdfd;
+    }
+    .divider {
+      height: 1px;
+      margin: 12px 0;
+      background: radial-gradient(circle at left, #00e5ff55, transparent 60%);
+    }
+    .nav-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .nav-btn {
+      flex: 1 1 45%;
+      text-align: center;
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-size: 0.78rem;
+      border: 1px solid #2d3248;
+      background: #0a0d18;
+      color: #e1e4ff;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .nav-btn.main {
+      background: linear-gradient(90deg,#00d1ff,#00ffa3);
+      color: #05111a;
+      border: none;
+      font-weight: 600;
+    }
+    .small {
+      margin-top: 6px;
+      font-size: 0.72rem;
+      color: #777c9c;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Demo Status Overview</h1>
+    <p class="subtitle">لمعرفة إذا كانت صفحات <strong>Member</strong> و <strong>AI Power</strong> و <strong>Invite</strong> و <strong>My Team</strong> تقرأ نفس البيانات.</p>
+
+    <div class="tag">
+      <span class="badge-dot"></span>
+      <span id="membershipTag">Current Level: V0</span>
+    </div>
+
+    <div class="grid">
+      <div class="pill">
+        <div class="pill-label">Account balance</div>
+        <div class="pill-value" id="balanceText">0 USDT</div>
+      </div>
+      <div class="pill">
+        <div class="pill-label">Effective users</div>
+        <div class="pill-value" id="usersText">0</div>
+      </div>
+    </div>
+
+    <div class="section-title">Daily info (AI Power)</div>
+    <div class="list">
+      <div class="list-row">
+        <span class="list-label">Total daily profit (1.8%)</span>
+        <span class="list-value" id="dailyProfitText">0</span>
+      </div>
+      <div class="list-row">
+        <span class="list-label">Max runs today (V1+V2+V3)</span>
+        <span class="list-value" id="maxRunsText">0</span>
+      </div>
+      <div class="list-row">
+        <span class="list-label">Profit per run</span>
+        <span class="list-value" id="profitPerRunText">0</span>
+      </div>
+    </div>
+
+    <div class="section-title">Recharge & time</div>
+    <div class="list">
+      <div class="list-row">
+        <span class="list-label">Last recharge</span>
+        <span class="list-value" id="lastRechargeText">-</span>
+      </div>
+      <div class="list-row">
+        <span class="list-label">Days since recharge</span>
+        <span class="list-value" id="daysSinceText">-</span>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section-title">Quick navigation</div>
+    <div class="nav-row">
+      <a class="nav-btn main" href="member_levels_updated.html">Member Levels</a>
+      <a class="nav-btn" href="ai-power_profit_final.html">AI Power</a>
+      <a class="nav-btn" href="invite_final.html">Invite</a>
+      <a class="nav-btn" href="my-team_final.html">My Team</a>
+    </div>
+
+    <p class="small">
+      هذه الصفحة للـ<strong>تجربة فقط</strong>. إذا تغيّر الرصيد أو عدد الأعضاء هنا، يجب أن ترى نفس الأرقام في الصفحات الأخرى.
+    </p>
+  </div>
+
+  <script>
+    function getNumber(key, defVal) {
+      var raw = localStorage.getItem(key);
+      var n = parseFloat(raw);
+      if (isNaN(n)) return defVal;
+      return n;
+    }
+
+    function getInt(key, defVal) {
+      var raw = localStorage.getItem(key);
+      var n = parseInt(raw || "0", 10);
+      if (isNaN(n)) return defVal;
+      return n;
+    }
+
+    function getUserInfo() {
+      var balance = getNumber("demoBalance", 0);
+      var effectiveUsers = getInt("demoEffectiveUsers", 0);
+      return { balance: balance, effectiveUsers: effectiveUsers };
+    }
+
+    var levelRules = {
+      V1: { minBalance: 50,   minUsers: 0  },
+      V2: { minBalance: 500,  minUsers: 5  },
+      V3: { minBalance: 3000, minUsers: 10 }
+    };
+
+    function calcMembershipLevel() {
+      var info = getUserInfo();
+      var current = "V0";
+      ["V1","V2","V3"].forEach(function (lvl) {
+        var r = levelRules[lvl];
+        if (info.balance >= r.minBalance && info.effectiveUsers >= r.minUsers) {
+          current = lvl;
+        }
+      });
+      return current;
+    }
+
+    function calcMaxRuns(level) {
+      var runs = 0;
+      if (["V1","V2","V3"].indexOf(level) === -1) return 0;
+      runs += 2; // V1
+      if (level === "V2" || level === "V3") runs += 3; // V2
+      if (level === "V3") runs += 5; // V3
+      return runs;
+    }
+
+    function formatDate(d) {
+      if (!d) return "-";
+      var y = d.getFullYear();
+      var m = String(d.getMonth() + 1).padStart(2, "0");
+      var day = String(d.getDate()).padStart(2, "0");
+      var hh = String(d.getHours()).padStart(2, "0");
+      var mm = String(d.getMinutes()).padStart(2, "0");
+      return y + "-" + m + "-" + day + " " + hh + ":" + mm;
+    }
+
+    function init() {
+      var info = getUserInfo();
+      var level = calcMembershipLevel();
+
+      var membershipTag = document.getElementById("membershipTag");
+      var balanceText = document.getElementById("balanceText");
+      var usersText = document.getElementById("usersText");
+      var dailyProfitText = document.getElementById("dailyProfitText");
+      var maxRunsText = document.getElementById("maxRunsText");
+      var profitPerRunText = document.getElementById("profitPerRunText");
+      var lastRechargeText = document.getElementById("lastRechargeText");
+      var daysSinceText = document.getElementById("daysSinceText");
+
+      if (membershipTag) {
+        membershipTag.textContent = "Current Level: " + level;
+      }
+      if (balanceText) {
+        balanceText.textContent = info.balance.toFixed(2) + " USDT";
+      }
+      if (usersText) {
+        usersText.textContent = info.effectiveUsers.toString();
+      }
+
+      var dailyProfit = info.balance * 0.018;
+      var maxRuns = calcMaxRuns(level);
+      var profitPerRun = maxRuns > 0 ? dailyProfit / maxRuns : 0;
+
+      dailyProfitText.textContent = dailyProfit.toFixed(4) + " USDT";
+      maxRunsText.textContent = maxRuns.toString();
+      profitPerRunText.textContent = profitPerRun.toFixed(4) + " USDT";
+
+      var lastRechargeRaw = localStorage.getItem("demoLastRechargeAt");
+      if (lastRechargeRaw) {
+        var d = new Date(lastRechargeRaw);
+        if (!isNaN(d.getTime())) {
+          lastRechargeText.textContent = formatDate(d);
+          var now = new Date();
+          var diffDays = (now - d) / (1000 * 60 * 60 * 24);
+          daysSinceText.textContent = diffDays.toFixed(1);
+        }
+      }
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", init);
+    } else {
+      init();
+    }
+  </script>
+</body>
+</html>
