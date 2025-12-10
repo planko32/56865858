@@ -93,6 +93,14 @@
       var maxLink = document.getElementById('maxLink');
       var withdrawBtn = document.getElementById('withdrawBtn');
       var availableVal = document.getElementById('availableVal');
+      var addressBox = document.querySelector('.select-box.address-row');
+      var addAddressBtn = document.querySelector('.add-address-btn');
+      var addressPlaceholder = addressBox ? addressBox.querySelector('.select-placeholder') : null;
+
+      var selectedAddress = null;
+      var ADDR_KEY = 'withdrawAddresses_v1';
+      var ADDR_SELECTED_KEY = 'withdrawSelectedAddress_v1';
+
 
       var balance = 0;
 
@@ -148,6 +156,64 @@
         return null;
       }
 
+
+      function loadAddresses() {
+        try {
+          var raw = localStorage.getItem(ADDR_KEY);
+          if (!raw) return [];
+          var arr = JSON.parse(raw);
+          if (!Array.isArray(arr)) return [];
+          return arr;
+        } catch (e) {
+          console.warn('loadAddresses error', e);
+          return [];
+        }
+      }
+
+      function saveAddresses(list) {
+        try {
+          localStorage.setItem(ADDR_KEY, JSON.stringify(list || []));
+        } catch (e) {
+          console.warn('saveAddresses error', e);
+        }
+      }
+
+      function loadSelectedAddress() {
+        try {
+          var a = localStorage.getItem(ADDR_SELECTED_KEY);
+          return a || null;
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function setSelectedAddress(addr) {
+        selectedAddress = addr || null;
+        try {
+          if (addr) {
+            localStorage.setItem(ADDR_SELECTED_KEY, addr);
+          } else {
+            localStorage.removeItem(ADDR_SELECTED_KEY);
+          }
+        } catch (e) {}
+        updateAddressUI();
+      }
+
+      function maskAddress(addr) {
+        if (!addr) return 'Please select an address';
+        addr = String(addr);
+        if (addr.length <= 10) return addr;
+        return addr.slice(0, 4) + '****' + addr.slice(-4);
+      }
+
+      function updateAddressUI() {
+        if (!addressPlaceholder) return;
+        if (selectedAddress) {
+          addressPlaceholder.textContent = maskAddress(selectedAddress);
+        } else {
+          addressPlaceholder.textContent = 'Please select an address';
+        }
+      }
       if (qtyInput) {
         qtyInput.addEventListener('input', updateValues);
       }
@@ -159,12 +225,51 @@
         });
       }
 
+
+      if (addAddressBtn) {
+        addAddressBtn.addEventListener('click', function() {
+          var addr = prompt('Enter withdrawal address (USDT TRC20):');
+          if (!addr) return;
+          addr = addr.trim();
+          if (!addr) return;
+          var list = loadAddresses();
+          if (list.indexOf(addr) === -1) {
+            list.push(addr);
+          }
+          saveAddresses(list);
+          setSelectedAddress(addr);
+          alert('Withdrawal address saved.');
+        });
+      }
+
+      if (addressBox) {
+        addressBox.addEventListener('click', function() {
+          var list = loadAddresses();
+          if (!list.length) {
+            alert('No saved addresses. Please add an address first.');
+            return;
+          }
+          var idx = -1;
+          if (selectedAddress) {
+            idx = list.indexOf(selectedAddress);
+          }
+          idx = (idx + 1) % list.length;
+          setSelectedAddress(list[idx]);
+        });
+      }
+
       if (withdrawBtn) {
         withdrawBtn.addEventListener('click', function() {
           if (!window.DemoWallet ||
               typeof window.DemoWallet.getWallet !== 'function' ||
               typeof window.DemoWallet.withdraw !== 'function') {
             alert('Internal error: wallet not available.');
+            return;
+          }
+
+
+          if (!selectedAddress) {
+            alert('Please add and select a withdrawal address first.');
             return;
           }
 
@@ -203,23 +308,17 @@
           }
 
           // Check last withdrawal time (3-day rule)
-          var earlyWithdrawal = false;
           var lastWithdraw = getLastTxTime('withdraw');
           if (lastWithdraw) {
             var diffDays = (now - lastWithdraw) / (1000 * 60 * 60 * 24);
             if (diffDays < COOLDOWN_WITHDRAW_DAYS) {
-              var confirmEarly = confirm(
-                'You can withdraw once every ' + COOLDOWN_WITHDRAW_DAYS +
-                ' days. If you continue now, the amount will be frozen and the withdrawal may take up to 120 hours.\n\nDo you want to continue?'
-              );
-              if (!confirmEarly) {
-                return;
-              }
-              earlyWithdrawal = true;
+              alert('You can withdraw once every ' + COOLDOWN_WITHDRAW_DAYS +
+                    ' days. Please try again later.');
+              return;
             }
           }
 
-          var result = DemoWallet.withdraw(v);
+var result = DemoWallet.withdraw(v);
           if (!result) {
             alert('Withdrawal failed, please try again.');
             return;
@@ -236,15 +335,14 @@
           }
           updateValues();
 
-          if (earlyWithdrawal) {
-            alert('Withdrawal request created. Amount has been frozen and is now pending manual review (up to 120 hours).');
-          } else {
-            alert('Withdrawal request submitted and is pending review (2–120 hours).');
-          }
+                    alert('Withdrawal request submitted and is pending review (2–120 hours).');
+     }
         });
       }
 
       // initial sync
+      selectedAddress = loadSelectedAddress();
+      updateAddressUI();
       syncBalance();
       updateValues();
     })();
