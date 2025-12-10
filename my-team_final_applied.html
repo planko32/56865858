@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>My Team - EXARAI</title>
+  <style>
+    :root {
+      --el-bg-color: #0C0B10;
+      --el-bg-color-1: #17202D;
+      --el-bg-color1: linear-gradient(90deg, #0B2F3B 0%, #101B20 100%);
+      --el-bg-color2: #0E131B;
+      --el-bg-color3: #2D2C2A;
+      --el-bg-color4: #2C2E2F;
+      --el-bg-color5: rgba(0, 0, 0, .45);
+      --el-bg-color6: rgba(0, 0, 0, .45);
+      --el-bg-color7: #3B3B3B;
+      --el-bg-color8: #272727;
+      --el-bg-color9: #3B3B3B;
+      --el-bg-color10: #17202D;
+      --el-bg-color11: rgba(255, 255, 255, .08);
+      --el-bg-color12: #000000;
+      --el-bg-color13: #191919;
+      --el-bg-color14: #17202D;
+      --el-bg-color15: rgba(255, 255, 255, .04);
+      --el-bg-color16: #dbe3f4;
+      --el-bg-color17: #0C0B10;
+      --el-bg-color18: rgba(42, 42, 42, 1);
+      --el-bg-color19: #17202d;
+      --el-bg-color20: #304158;
+      --el-bg-color21: #2a2a2a;
+      --el-bg-color22: rgba(0, 0, 0, 0);
+      --el-bg-color23: #233246;
+      --el-bg-color24: #16202D;
+      --el-bg-color25: linear-gradient(180deg, #17202D 0%, #131B27 100%);
+      --el-bg-color26: linear-gradient(90deg, #0B2F3B 0%, #101B20 100%);
+      --el-bg-color27: #17202D;
+      --el-bg-color28: rgba(255, 255, 255, .1);
+      --el-bg-color30: #212E3F;
+      --el-bg-home-color: #0C0B10;
+
+      --el-bt-color1: rgba(255, 255, 255, .45);
+      --el-bt-color2: rgba(255, 255, 255, .85);
+      --el-bt-color3: #ffffff;
+      --el-bt-color4: rgba(255, 255, 255, .05);
+      --el-bt-color5: rgba(255, 255, 255, .5);
+      --el-bt-color6: rgba(255, 255, 255, .65);
+      --el-bt-color7: rgba(255, 255, 255, .34);
+      --el-bt-color8: rgba(255, 255, 255, .45);
+      --el-bt-color9: rgba(255, 255, 255, .6);
+      --el-bt-color10: rgba(255, 221, 154, .85);
+      --el-bt-color11: rgba(255, 255, 255, .6);
+      --el-bt-color12: rgba(0, 0, 0, .85);
+      --el-bt-color13: rgba(0, 0, 0, 0);
+
+      --el-border-color: #233246;
+      --el-border-color1: rgba(255, 255, 255, .04);
+      --el-border-color2: #17202D;
+      --el-border-color3: #3B3B3B;
+      --el-border-color4: rgba(255, 255, 255, .2);
+
+      --page-bg: var(--el-bg-home-color);
+      --panel-bg: #111111;
+      --panel-deep: #0B0C10;
+      --chip-bg: #1b1d25;
+      --border-subtle: var(--el-border-color);
+      --divider: #323233;
+      --text-main: #ffffff;
+      --text-muted: #8D9095;
+      --accent: #00d1ff;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+      background-color: var(--page-bg);
+      color: var(--text-main);
+    }
+
+    .app {
+      min-height: 100vh;
+      background-color: var(--page-bg);
+      color: var(--text-main);
+    }
+
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      background: #000000;
+    }
+
+    .back-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      margin-right: 8px;
+      background: rgba(11, 12, 16, 0.95);
+    }
+
+    .back-arrow {
+      width: 10px;
+      height: 10px;
+      border-left: 2px solid #ffffff;
+      border-bottom: 2px solid #ffffff;
+      transform: rotate(45deg);
+    }
+
+    .app-header-title {
+      flex: 1;
+      text-align: center;
+      margin-right: 40px;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--el-bt-color11);
+    }
+
+    .app-main {
+      padding: 16px 16px 24px;
+    }
+
+    .top-tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px 4px 4px;
+      border-radius: 999px;
+      background: #111111;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.7);
+      margin-bottom: 14px;
+    }
+
+    .top-tag-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-right: 6px;
+      background: radial-gradient(circle at 30% 0, #ffde8b, #ff6bd0 40%, #5edbff 75%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .top-tag-avatar img {
+      width: 26px;
+      height: 26px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .top-tag span {
+      font-size: 13px;
+      color: var(--el-bt-color11);
+    }
+
+    .summary-card {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .summary-box {
+      flex: 1;
+      border-radius: 12px;
+      padding: 10px 12px;
+      background: var(--el-bg-color26);
+      border: 1px solid var(--el-border-color2);
+    }
+
+    .summary-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .summary-value {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--el-bt-color3);
+    }
+
+    .section-title {
+      font-size: 12px;
+      color: var(--accent);
+      margin-bottom: 8px;
+      margin-top: 4px;
+    }
+
+    .generation-card {
+      border-radius: 12px;
+      background-color: var(--panel-bg);
+      border: 1px solid var(--border-subtle);
+      padding: 10px 12px 8px;
+      margin-bottom: 10px;
+    }
+
+    .generation-header {
+      font-size: 13px;
+      margin-bottom: 8px;
+      color: var(--el-bt-color11);
+    }
+
+    .generation-values,
+    .generation-footer {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+    }
+
+    .generation-values span {
+      color: var(--el-bt-color11);
+    }
+
+    .generation-values span:first-child {
+      color: var(--accent);
+    }
+
+    .generation-footer {
+      margin-top: 4px;
+      color: var(--text-muted);
+    }
+
+    .generation-footer span {
+      flex: 1;
+      text-align: left;
+    }
+
+    .generation-values span {
+      flex: 1;
+      text-align: left;
+    }
+
+    .generation-values span:nth-child(2),
+    .generation-footer span:nth-child(2) {
+      text-align: center;
+    }
+
+    .generation-values span:nth-child(3),
+    .generation-footer span:nth-child(3) {
+      text-align: right;
+    }
+
+    .section-title-list {
+      font-size: 12px;
+      color: var(--accent);
+      margin: 10px 0 8px;
+    }
+
+    .filter-row {
+      display: flex;
+      gap: 8px;
+      margin: 6px 0 8px;
+    }
+
+    .filter-input {
+      flex: 1;
+      height: 36px;
+      border-radius: 8px;
+      border: 1px solid var(--el-border-color2);
+      background-color: var(--panel-bg);
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .filter-input .placeholder {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .filter-input input[type="date"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      border: none;
+      background: transparent;
+      color: transparent;
+      cursor: pointer;
+    }
+
+    .dropdown-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 2px;
+      border-bottom: 1px solid var(--divider);
+      font-size: 12px;
+      color: var(--el-bt-color11);
+    }
+
+    .dropdown-row .chevron {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .collapse-row {
+      text-align: center;
+      padding: 10px 0 4px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .team-table {
+      width: 100%;
+      border-spacing: 0;
+      border-collapse: collapse;
+      margin-top: 6px;
+      font-size: 11px;
+      color: var(--text-main);
+      background-color: var(--panel-deep);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .team-table thead {
+      background-color: #111111;
+    }
+
+    .team-table th,
+    .team-table td {
+      padding: 8px 10px;
+      text-align: left;
+    }
+
+    .team-table th {
+      font-weight: 500;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--divider);
+    }
+
+    .team-table tbody tr:nth-child(even) {
+      background-color: var(--panel-deep);
+    }
+
+    .team-table tbody tr:nth-child(odd) {
+      background-color: var(--panel-deep);
+    }
+
+    .team-table td {
+      color: #cacfd8;
+    }
+
+    @media (min-width: 480px) {
+      .app {
+        max-width: 480px;
+        margin: 0 auto;
+        border-left: 1px solid #111;
+        border-right: 1px solid #111;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <a href="javascript:history.back()" class="back-btn">
+        <div class="back-arrow"></div>
+      </a>
+      <div class="app-header-title">My Team</div>
+    </header>
+
+    <main class="app-main">
+      <div class="top-tag">
+        <div class="top-tag-avatar">
+          <img src="images/level-icon.png" alt="My Team" />
+        </div>
+        <span>My Team</span>
+      </div>
+
+      <section class="summary-card">
+        <div class="summary-box">
+          <div class="summary-label">Team Size</div>
+          <div class="summary-value">0/0</div>
+        </div>
+        <div class="summary-box">
+          <div class="summary-label">Today&apos;s Earnings/Total revenue</div>
+          <div class="summary-value">0/0</div>
+        </div>
+      </section>
+
+      <div class="section-title">Effective user data</div>
+
+      <section class="generation-card">
+        <div class="generation-header">1Generation</div>
+        <div class="generation-values">
+          <span>0/0</span>
+          <span>0%</span>
+          <span>0/0</span>
+        </div>
+        <div class="generation-footer">
+          <span>Effective member</span>
+          <span>Commission percentage</span>
+          <span>Income</span>
+        </div>
+      </section>
+
+      <section class="generation-card">
+        <div class="generation-header">2Generation</div>
+        <div class="generation-values">
+          <span>0/0</span>
+          <span>0%</span>
+          <span>0/0</span>
+        </div>
+        <div class="generation-footer">
+          <span>Effective member</span>
+          <span>Commission percentage</span>
+          <span>Income</span>
+        </div>
+      </section>
+
+      <section class="generation-card">
+        <div class="generation-header">3Generation</div>
+        <div class="generation-values">
+          <span>0/0</span>
+          <span>0%</span>
+          <span>0/0</span>
+        </div>
+        <div class="generation-footer">
+          <span>Effective member</span>
+          <span>Commission percentage</span>
+          <span>Income</span>
+        </div>
+      </section>
+
+      <div class="section-title-list">Team List</div>
+
+      <div class="filter-row">
+        <div class="filter-input">
+          <span class="placeholder">Start Time</span>
+        </div>
+        <div class="filter-input">
+          <span class="placeholder">End Time</span>
+        </div>
+      </div>
+
+      <div class="dropdown-row">
+        <span>All Levels</span>
+        <span class="chevron">▾</span>
+      </div>
+      <div class="dropdown-row">
+        <span>All Users</span>
+        <span class="chevron">▾</span>
+      </div>
+      <div class="dropdown-row">
+        <span>LV.1</span>
+        <span class="chevron">▾</span>
+      </div>
+
+      <div class="collapse-row">Collapse ▲</div>
+
+      <table class="team-table">
+        <thead>
+          <tr>
+            <th>Account</th>
+            <th>ID</th>
+            <th>Level</th>
+            <th>Registration time</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+          </tr>
+        </tbody>
+      </table>
+    </main>
+  </div>
+
+  
+  <script>
+    (function () {
+      // Toggle collapse of filters + dropdowns
+      var collapseRow = document.querySelector('.collapse-row');
+      var filterRow = document.querySelector('.filter-row');
+      var dropdownRows = document.querySelectorAll('.dropdown-row');
+      if (collapseRow && filterRow && dropdownRows.length) {
+        collapseRow.addEventListener('click', function () {
+          var hidden = filterRow.style.display === 'none';
+          filterRow.style.display = hidden ? 'flex' : 'none';
+          dropdownRows.forEach(function (row) {
+            row.style.display = hidden ? 'flex' : 'none';
+          });
+          collapseRow.textContent = hidden ? 'Collapse ▲' : 'Expand ▼';
+        });
+      }
+
+      // Date inputs inside Start/End boxes
+      var filterInputs = document.querySelectorAll('.filter-row .filter-input');
+      if (filterInputs.length >= 2) {
+        ['start', 'end'].forEach(function (type, idx) {
+          var box = filterInputs[idx];
+          if (!box) return;
+          var span = box.querySelector('.placeholder');
+
+          // create hidden date input that covers box
+          var input = document.createElement('input');
+          input.type = 'date';
+          box.appendChild(input);
+
+          // sync display when user picks a date
+          input.addEventListener('change', function () {
+            if (!span) return;
+            if (input.value) {
+              span.textContent = input.value;
+            } else {
+              span.textContent = type === 'start' ? 'Start Time' : 'End Time';
+            }
+            document.dispatchEvent(new CustomEvent('myteam:filtersChanged'));
+          });
+        });
+      }
+
+      // Dropdowns: first = levels filter, others visual only
+      if (dropdownRows.length) {
+        var levelRow = dropdownRows[0];
+        var levelOptions = ['All Levels', 'LV.1', 'LV.2', 'LV.3', 'LV.4', 'LV.5', 'LV.6'];
+
+        levelRow.addEventListener('click', function () {
+          var labelSpan = levelRow.querySelector('span:first-child');
+          if (!labelSpan) return;
+          var current = labelSpan.textContent.trim();
+          var idx = levelOptions.indexOf(current);
+          if (idx === -1) idx = 0;
+          var next = levelOptions[(idx + 1) % levelOptions.length];
+          labelSpan.textContent = next;
+          document.dispatchEvent(new CustomEvent('myteam:filtersChanged'));
+        });
+
+        // other dropdown rows visual toggle only
+        for (var i = 1; i < dropdownRows.length; i++) {
+          (function (row) {
+            row.addEventListener('click', function () {
+              row.classList.toggle('is-open');
+            });
+          })(dropdownRows[i]);
+        }
+      }
+    })();
+  </script>
+
+
+  <script src="wallet.js"></script>
+  
+  <script>
+    (function () {
+
+      function maskAccount(account) {
+        if (!account) return "-";
+        var str = String(account).trim();
+        var sign = "";
+        if (str.charAt(0) === "+") {
+          sign = "+";
+          str = str.slice(1);
+        }
+        var clean = str.replace(/\s+/g, "");
+        if (clean.length <= 6) {
+          return sign + clean;
+        }
+        var first = clean.slice(0, 3);
+        var last = clean.slice(-3);
+        return sign + first + "****" + last;
+      }
+
+      function parseDateSafe(text) {
+        if (!text) return null;
+        var t = text.trim();
+        if (!t || t === "Start Time" || t === "End Time") return null;
+        var d = new Date(t);
+        if (isNaN(d.getTime())) return null;
+        return d;
+      }
+
+      function getFilterValues() {
+        var filterRow = document.querySelector(".filter-row");
+        var startSpan = filterRow ? filterRow.querySelector(".filter-input:nth-child(1) .placeholder") : null;
+        var endSpan = filterRow ? filterRow.querySelector(".filter-input:nth-child(2) .placeholder") : null;
+
+        var startDate = startSpan ? parseDateSafe(startSpan.textContent) : null;
+        var endDate = endSpan ? parseDateSafe(endSpan.textContent) : null;
+
+        var endDateMax = null;
+        if (endDate) {
+          endDateMax = new Date(endDate.getTime());
+          endDateMax.setHours(23, 59, 59, 999);
+        }
+
+        var levelRows = document.querySelectorAll(".dropdown-row");
+        var levelLabel = levelRows.length ? levelRows[0].querySelector("span:first-child") : null;
+        var levelFilter = null;
+        if (levelLabel) {
+          var txt = levelLabel.textContent.trim();
+          if (/^LV\./i.test(txt)) {
+            var n = parseInt(txt.split(".")[1], 10);
+            if (!isNaN(n)) levelFilter = n;
+          }
+        }
+
+        return {
+          startDate: startDate,
+          endDateMax: endDateMax,
+          levelFilter: levelFilter
+        };
+      }
+
+      function applyTeamInfo() {
+        if (!window.DemoWallet || !window.DemoWallet.getTeamSummary) return;
+        var summary = window.DemoWallet.getTeamSummary() || {};
+
+        var teamSize = summary.teamSize || (summary.members ? summary.members.length : 0) || 0;
+        var todayIncome = summary.todayIncome || 0;
+        var totalIncome = summary.totalIncome || 0;
+
+        var summaryValues = document.querySelectorAll(".summary-box .summary-value");
+        if (summaryValues.length >= 2) {
+          var denomSize = teamSize;
+          summaryValues[0].textContent = teamSize + "/" + denomSize;
+          summaryValues[1].textContent = todayIncome + "/" + totalIncome;
+        }
+
+        var cards = document.querySelectorAll(".generation-card");
+        if (cards.length >= 3 && summary.generations) {
+          [1, 2, 3].forEach(function (g, idx) {
+            var card = cards[idx];
+            if (!card) return;
+            var row = card.querySelector(".generation-values");
+            if (!row) return;
+            var spans = row.querySelectorAll("span");
+            var genInfo = summary.generations[g] || { effective: 0, percent: 0, income: 0 };
+            if (spans.length >= 3) {
+              var totalGen = genInfo.total || genInfo.invited || genInfo.effective || 0;
+              spans[0].textContent = (genInfo.effective || 0) + "/" + totalGen;
+              spans[1].textContent = (genInfo.percent != null ? genInfo.percent : (g === 1 ? 20 : g === 2 ? 5 : 3)) + "%";
+              var todayGenIncome =
+                genInfo.todayIncome != null ? genInfo.todayIncome : (genInfo.incomeToday || 0);
+              var totalGenIncome =
+                genInfo.totalIncome != null ? genInfo.totalIncome : (genInfo.income || 0);
+              spans[2].textContent = todayGenIncome + "/" + totalGenIncome;
+            }
+          });
+        }
+
+        var filters = getFilterValues();
+        var tbody = document.querySelector(".team-table tbody");
+        if (tbody) {
+          while (tbody.firstChild) {
+            tbody.removeChild(tbody.firstChild);
+          }
+          var list = summary.members || [];
+
+          var filtered = list.filter(function (m) {
+            if (filters.levelFilter != null) {
+              var lvlNum = m.level != null ? parseInt(m.level, 10) : null;
+              if (lvlNum !== filters.levelFilter) return false;
+            }
+            if (filters.startDate || filters.endDateMax) {
+              var reg = m.registeredAt ? new Date(m.registeredAt) : null;
+              if (!reg || isNaN(reg.getTime())) return false;
+              if (filters.startDate && reg < filters.startDate) return false;
+              if (filters.endDateMax && reg > filters.endDateMax) return false;
+            }
+            return true;
+          });
+
+          if (!filtered.length) {
+            var tr = document.createElement("tr");
+            ["-", "-", "-", "-"].forEach(function (txt) {
+              var td = document.createElement("td");
+              td.textContent = txt;
+              tr.appendChild(td);
+            });
+            tbody.appendChild(tr);
+          } else {
+            filtered.forEach(function (m) {
+              var tr = document.createElement("tr");
+              var account = m.account || "-";
+              var userId = m.userId || "-";
+              var level = m.level != null ? ("LV." + m.level) : "LV.1";
+              var regTime = m.registeredAt || "-";
+              [maskAccount(account), userId, level, regTime].forEach(function (txt) {
+                var td = document.createElement("td");
+                td.textContent = txt;
+                tr.appendChild(td);
+              });
+              tbody.appendChild(tr);
+            });
+          }
+        }
+      }
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", function () {
+          applyTeamInfo();
+          document.addEventListener("myteam:filtersChanged", applyTeamInfo);
+        });
+      } else {
+        applyTeamInfo();
+        document.addEventListener("myteam:filtersChanged", applyTeamInfo);
+      }
+    })();
+  </script>
+
+
+</body>
+</html>
