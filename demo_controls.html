@@ -1,0 +1,211 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Demo Controls - Balance & Members</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #05060a;
+      color: #f7f7f7;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .card {
+      width: 100%;
+      max-width: 420px;
+      background: #111218;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 18px 45px rgba(0,0,0,0.6);
+      border: 1px solid #22242f;
+    }
+    h1 {
+      font-size: 1.1rem;
+      margin: 0 0 12px;
+      text-align: center;
+    }
+    .subtitle {
+      font-size: 0.82rem;
+      color: #b0b2c2;
+      text-align: center;
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .label {
+      font-size: 0.85rem;
+      color: #c1c4d8;
+    }
+    .value {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #ffda7b;
+    }
+    input[type="number"] {
+      width: 100%;
+      box-sizing: border-box;
+      border-radius: 10px;
+      border: 1px solid #2e3040;
+      background: #080914;
+      color: #f7f7f7;
+      padding: 8px 10px;
+      font-size: 0.9rem;
+      outline: none;
+    }
+    input[type="number"]::placeholder {
+      color: #5d6071;
+    }
+    .btn {
+      width: 100%;
+      border-radius: 999px;
+      border: none;
+      padding: 10px 14px;
+      margin-top: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      background: linear-gradient(90deg,#ffcb4e,#ff9f2e);
+      color: #20140a;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.5);
+    }
+    .btn:active {
+      transform: translateY(1px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.7);
+    }
+    .btn-secondary {
+      background: #1b1d29;
+      color: #e1e3f2;
+      border: 1px solid #32354a;
+      box-shadow: none;
+    }
+    .small {
+      font-size: 0.78rem;
+      color: #8c8fa3;
+      margin-top: 4px;
+    }
+    .divider {
+      height: 1px;
+      background: radial-gradient(circle at left, #ffc75a, transparent 60%);
+      opacity: 0.5;
+      margin: 16px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Demo Member Controls</h1>
+    <p class="subtitle">
+      هذه الصفحة فقط للتجربة على جهازك.<br/>
+      تعدّل القيم المخزّنة في <strong>localStorage</strong> بنفس الأسماء التي تستخدمها صفحة المستويات.
+    </p>
+
+    <div class="row">
+      <span class="label">Current Balance (USDT)</span>
+      <span class="value" id="currentBalance">0</span>
+    </div>
+    <div class="row">
+      <input id="balanceStep" type="number" step="1" placeholder="قيمة الزيادة مثلا 10" />
+    </div>
+    <button class="btn" id="addBalanceBtn">+ زيادة الرصيد</button>
+    <button class="btn btn-secondary" id="setBalanceBtn">تعيين الرصيد مباشرة</button>
+    <p class="small">
+      الرصيد محفوظ في <code>localStorage["demoBalance"]</code>.
+    </p>
+
+    <div class="divider"></div>
+
+    <div class="row">
+      <span class="label">Effective Users</span>
+      <span class="value" id="currentUsers">0</span>
+    </div>
+    <div class="row">
+      <input id="usersStep" type="number" step="1" placeholder="عدد الأعضاء الإضافيين" />
+    </div>
+    <button class="btn" id="addUsersBtn">+ زيادة عدد الأعضاء الفعّالين</button>
+    <button class="btn btn-secondary" id="setUsersBtn">تعيين العدد مباشرة</button>
+    <p class="small">
+      العدد محفوظ في <code>localStorage["demoEffectiveUsers"]</code>.
+    </p>
+
+    <div class="divider"></div>
+
+    <button class="btn btn-secondary" id="resetBtn">تصفير الرصيد والأعضاء</button>
+  </div>
+
+  <script>
+    function readNumber(key) {
+      var raw = localStorage.getItem(key);
+      var num = parseFloat(raw);
+      if (isNaN(num)) num = 0;
+      return num;
+    }
+
+    function writeNumber(key, val) {
+      if (typeof val !== "number" || isNaN(val)) val = 0;
+      localStorage.setItem(key, String(val));
+    }
+
+    function refreshUI() {
+      var balance = readNumber("demoBalance");
+      var users = readNumber("demoEffectiveUsers");
+      document.getElementById("currentBalance").textContent = balance.toFixed(2);
+      document.getElementById("currentUsers").textContent = users.toString();
+    }
+
+    document.getElementById("addBalanceBtn").addEventListener("click", function () {
+      var step = parseFloat(document.getElementById("balanceStep").value || "0");
+      if (isNaN(step)) step = 0;
+      var current = readNumber("demoBalance");
+      writeNumber("demoBalance", current + step);
+      refreshUI();
+    });
+
+    document.getElementById("setBalanceBtn").addEventListener("click", function () {
+      var step = parseFloat(document.getElementById("balanceStep").value || "0");
+      if (isNaN(step)) step = 0;
+      writeNumber("demoBalance", step);
+      refreshUI();
+    });
+
+    document.getElementById("addUsersBtn").addEventListener("click", function () {
+      var step = parseInt(document.getElementById("usersStep").value || "0", 10);
+      if (isNaN(step)) step = 0;
+      var current = readNumber("demoEffectiveUsers");
+      writeNumber("demoEffectiveUsers", current + step);
+      refreshUI();
+    });
+
+    document.getElementById("setUsersBtn").addEventListener("click", function () {
+      var step = parseInt(document.getElementById("usersStep").value || "0", 10);
+      if (isNaN(step)) step = 0;
+      writeNumber("demoEffectiveUsers", step);
+      refreshUI();
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", function () {
+      writeNumber("demoBalance", 0);
+      writeNumber("demoEffectiveUsers", 0);
+      document.getElementById("balanceStep").value = "";
+      document.getElementById("usersStep").value = "";
+      refreshUI();
+    });
+
+    refreshUI();
+  </script>
+</body>
+</html>
