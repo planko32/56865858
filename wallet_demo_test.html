@@ -1,0 +1,246 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wallet Demo Test</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #05060a;
+      color: #f7f7ff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .card {
+      width: 100%;
+      max-width: 420px;
+      background: #10121b;
+      border-radius: 18px;
+      padding: 18px 18px 20px;
+      box-shadow: 0 22px 45px rgba(0,0,0,0.7);
+      border: 1px solid #262a3d;
+    }
+    h1 {
+      margin: 0 0 6px;
+      font-size: 1.1rem;
+      text-align: center;
+    }
+    .subtitle {
+      text-align: center;
+      font-size: 0.8rem;
+      color: #a5a8c2;
+      margin-bottom: 16px;
+    }
+    .balance-box {
+      border-radius: 14px;
+      padding: 10px 12px;
+      background: radial-gradient(circle at top left,#00d1ff33,#080914);
+      border: 1px solid #23263b;
+      margin-bottom: 12px;
+    }
+    .balance-label {
+      font-size: 0.78rem;
+      color: #a6aac9;
+      margin-bottom: 4px;
+    }
+    .balance-value {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    .row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .row input {
+      flex: 1;
+      border-radius: 999px;
+      border: 1px solid #30344a;
+      background: #050713;
+      padding: 7px 10px;
+      font-size: 0.85rem;
+      color: #f7f7ff;
+      outline: none;
+      box-sizing: border-box;
+    }
+    .row input::placeholder {
+      color: #656982;
+    }
+    .btn {
+      border-radius: 999px;
+      border: none;
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .btn-deposit {
+      background: linear-gradient(90deg,#00ffa3,#00d1ff);
+      color: #041013;
+    }
+    .btn-withdraw {
+      background: #181b2b;
+      color: #f5f5ff;
+      border: 1px solid #343955;
+    }
+    .btn-refresh {
+      width: 100%;
+      margin-top: 6px;
+      background: #0b0e1a;
+      color: #c4c7e4;
+      border-radius: 999px;
+      border: 1px solid #292e48;
+      padding: 7px 10px;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    .msg {
+      margin-top: 8px;
+      font-size: 0.8rem;
+      color: #9ca1cf;
+      min-height: 1.2em;
+    }
+    .msg strong {
+      color: #f8f8ff;
+    }
+    .small {
+      margin-top: 10px;
+      font-size: 0.75rem;
+      color: #6e728f;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Wallet Demo Test</h1>
+    <p class="subtitle">زر شحن + زر سحب لاختبار منطق المحفظة (DemoWallet) بدون لمس باقي الصفحات.</p>
+
+    <div class="balance-box">
+      <div class="balance-label">USDT balance</div>
+      <div class="balance-value" id="usdtBalance">0.00 USDT</div>
+    </div>
+    <div class="balance-box">
+      <div class="balance-label">Other tokens (total)</div>
+      <div class="balance-value" id="otherBalance">0.00 USDT</div>
+    </div>
+
+    <div class="row">
+      <input id="amountInput" type="number" min="0" step="0.01" placeholder="Amount (USDT)" />
+    </div>
+    <div class="row">
+      <button class="btn btn-deposit" id="depositBtn">Deposit</button>
+      <button class="btn btn-withdraw" id="withdrawBtn">Withdraw</button>
+    </div>
+
+    <button class="btn-refresh" id="refreshBtn">Refresh balances</button>
+
+    <div class="msg" id="message"></div>
+    <p class="small">
+      ملاحظة: القيم تحفظ في <code>localStorage</code> عن طريق <code>wallet.js</code>.<br/>
+      أول مرة تفتح المحفظة يحصل المستخدم على 3 USDT كبونص تجريبي.
+    </p>
+  </div>
+
+  <script src="wallet.js"></script>
+  <script>
+    function updateView() {
+      if (!window.DemoWallet || !DemoWallet.getWallet) return;
+      var info = DemoWallet.getWallet();
+      var usdt = info.balance || 0;
+      var b = info.balances || {};
+      var totalOthers =
+        (Number(b.BTC) || 0) +
+        (Number(b.ETH) || 0) +
+        (Number(b.USDC) || 0) +
+        (Number(b.TRX) || 0);
+
+      document.getElementById("usdtBalance").textContent = usdt.toFixed(2) + " USDT";
+      document.getElementById("otherBalance").textContent = totalOthers.toFixed(2) + " USDT";
+    }
+
+    function setMessage(text) {
+      var el = document.getElementById("message");
+      if (!el) return;
+      el.innerHTML = text || "";
+    }
+
+    function init() {
+      if (!window.DemoWallet) {
+        setMessage("<strong>Error:</strong> wallet.js not found.");
+        return;
+      }
+      // Ensure state exists (and 3 USDT bonus if first time)
+      DemoWallet.getState && DemoWallet.getState();
+      updateView();
+
+      var amtInput = document.getElementById("amountInput");
+      var depBtn = document.getElementById("depositBtn");
+      var wdBtn = document.getElementById("withdrawBtn");
+      var refBtn = document.getElementById("refreshBtn");
+
+      if (depBtn) {
+        depBtn.addEventListener("click", function () {
+          var v = parseFloat(amtInput.value || "0");
+          if (!v || v <= 0) {
+            setMessage("Please enter a positive amount to deposit.");
+            return;
+          }
+          if (DemoWallet.deposit) {
+            DemoWallet.deposit("USDT", v);
+            updateView();
+            setMessage("Deposited <strong>" + v.toFixed(2) + " USDT</strong>.");
+          }
+        });
+      }
+
+      if (wdBtn) {
+        wdBtn.addEventListener("click", function () {
+          var v = parseFloat(amtInput.value || "0");
+          if (!v || v <= 0) {
+            setMessage("Please enter a positive amount to withdraw.");
+            return;
+          }
+          if (!DemoWallet.withdraw) return;
+          var before = DemoWallet.getWallet().balance || 0;
+          var result = DemoWallet.withdraw(v);
+          var afterInfo = DemoWallet.getWallet();
+          var after = afterInfo.balance || 0;
+          if (!result) {
+            setMessage("Insufficient balance or error. Cannot withdraw.");
+            updateView();
+            return;
+          }
+          updateView();
+          var diff = before - after;
+          setMessage(
+            "Withdraw request created for <strong>" +
+              v.toFixed(2) +
+              " USDT</strong> (including fee)."
+          );
+        });
+      }
+
+      if (refBtn) {
+        refBtn.addEventListener("click", function () {
+          updateView();
+          setMessage("Balances refreshed.");
+        });
+      }
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", init);
+    } else {
+      init();
+    }
+  </script>
+</body>
+</html>
