@@ -1,189 +1,536 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Withdraw - EXARAI</title>
-  <link rel="stylesheet" href="withdraw-style.css" />
+<meta charset="utf-8"/>
+<title>Bills</title>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<style>
+    :root {
+      --bg-main: #05060b;
+      --bg-card: #11141f;
+      --bg-input: #151824;
+      --border-subtle: #262a3a;
+      --text-primary: #ffffff;
+      --text-secondary: #7b8194;
+      --accent: #18c1ff;
+      --accent-2: #22e1a5;
+      --btn-disabled: #424654;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    }
+
+    .app {
+      min-height: 100vh;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 12px 12px 24px;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 0 10px;
+    }
+
+    .back-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background-color: #151824;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .back-btn img {
+      width: 18px;
+      height: 18px;
+      display: block;
+    }
+
+    .title {
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .record-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background-color: #151824;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .record-btn img {
+      width: 18px;
+      height: 18px;
+      display: block;
+    }
+
+    .content {
+      margin-top: 10px;
+    }
+
+    .time-range {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .time-input {
+      flex: 1;
+      height: 44px;
+      border-radius: 10px;
+      background-color: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .time-separator {
+      font-size: 12px;
+      color: var(--text-secondary);
+      min-width: 18px;
+      text-align: center;
+    }
+
+    .select-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 4px;
+      font-size: 14px;
+      color: var(--text-primary);
+    }
+
+    .select-row + .select-row {
+      border-top: 1px solid #11141f;
+    }
+
+    .select-label-main {
+      font-size: 14px;
+    }
+
+    .select-arrow {
+      width: 10px;
+      height: 10px;
+      border-right: 1px solid var(--text-secondary);
+      border-bottom: 1px solid var(--text-secondary);
+      transform: rotate(45deg);
+      margin-right: 4px;
+    }
+
+    .divider {
+      height: 1px;
+      background-color: #151824;
+      margin: 6px 0 18px;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .btn {
+      flex: 1;
+      height: 44px;
+      border-radius: 999px;
+      font-size: 15px;
+      border: none;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .btn-reset {
+      background-color: #2f333f;
+      color: #9a9fb0;
+    }
+
+    .btn-confirm {
+      background-image: linear-gradient(90deg, #18c1ff, #22e1a5);
+      color: #05060b;
+      font-weight: 500;
+    }
+
+
+    .empty-state {
+      margin-top: 24px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-align: center;
+    }
+
+    .bill-list {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .bill-item {
+      background-color: #0c0f18;
+      border-radius: 12px;
+      padding: 10px 12px;
+      border: 1px solid #171924;
+    }
+
+    .bill-main-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+
+    .bill-type {
+      font-size: 13px;
+      color: var(--text-primary);
+    }
+
+    .bill-amount {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--accent-2);
+    }
+
+    .bill-sub-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 2px;
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    .bill-status {
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .bill-time {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .bill-fee,
+    .bill-net {
+      font-size: 11px;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: space-between;
+      margin: 6px 0 10px;
+      background-color: #080a12;
+      border-radius: 999px;
+      padding: 2px;
+      border: 1px solid #151824;
+    }
+
+    .tab {
+      flex: 1;
+      text-align: center;
+      font-size: 12px;
+      padding: 7px 0;
+      border-radius: 999px;
+      text-decoration: none;
+      color: var(--text-secondary);
+    }
+
+    .tab.active {
+      background-image: linear-gradient(90deg, #18c1ff, #22e1a5);
+      color: #05060b;
+      font-weight: 500;
+    }
+
+
+    @media (min-width: 481px) {
+      body {
+        display: flex;
+        justify-content: center;
+        background-color: #000;
+      }
+      .app {
+        margin-top: 12px;
+        border-radius: 20px;
+        border: 1px solid #171924;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div class="app">
-    <header class="app-header">
-      <a href="javascript:history.back()" class="back-btn">
-        <div class="back-arrow"></div>
-      </a>
-      <div class="app-header-title">Withdraw</div>
-      <div class="header-icon">⧉</div>
-    </header>
+<div class="app">
+<header class="top-bar">
+<div class="back-btn">
+<img alt="Back" src="images/back-icon-D2ne3Npi.png"/>
+</div>
+<div class="title">Bills</div>
+<div class="record-btn">
+<img alt="Record" src="images/record.png"/>
+</div>
+</header>
 
-    <main class="app-main">
-      <div class="section-label">Withdrawal Currency</div>
-      <div class="select-box">
-        <span class="select-value">USDT</span>
-        <span class="chevron">▾</span>
+<main class="content">
+<section class="time-range">
+<input class="time-input" id="startDate" type="date"/>
+<div class="time-separator">To</div>
+<input class="time-input" id="endDate" type="date"/>
+</section>
+<section>
+<div class="select-row" id="typeRow">
+<div class="select-label-main" id="typeLabel">All</div>
+<div class="select-arrow"></div>
+</div>
+<div class="select-row" id="currencyRow">
+<div class="select-label-main" id="currencyLabel">All</div>
+<div class="select-arrow"></div>
+</div>
+</section>
+
+<div class="divider"></div>
+<section class="btn-row">
+<button class="btn btn-reset" type="button">Reset</button>
+<button class="btn btn-confirm" type="button">Confirm</button>
+</section>
+<div id="billsContainer" class="empty-state">
+        No bills yet.
       </div>
+</main>
+</div>
+<script src="wallet.js"></script>
+<script>
+  (function() {
+    var container = document.getElementById('billsContainer');
+    var startInput = document.getElementById('startDate');
+    var endInput = document.getElementById('endDate');
+    var resetBtn = document.querySelector('.btn-reset');
+    var confirmBtn = document.querySelector('.btn-confirm');
+    var typeRow = document.getElementById('typeRow');
+    var typeLabel = document.getElementById('typeLabel');
+    var currencyRow = document.getElementById('currencyRow');
+    var currencyLabel = document.getElementById('currencyLabel');
+    var backBtn = document.querySelector('.back-btn');
 
-      <div class="section-label">Withdrawal Network</div>
-      <div class="network-row">
-        <button type="button" class="network-pill">TRC20</button>
-      </div>
+    if (!container) return;
 
-      <div class="section-label">Withdrawal Address</div>
-      <div class="select-box address-row">
-        <span class="select-placeholder">Please select an address</span>
-        <div class="address-icon">👤</div>
-        <span class="chevron">▾</span>
-      </div>
-
-      <button type="button" class="add-address-btn">Add address</button>
-
-      <div class="section-label">Quantity</div>
-      <div class="select-box qty-box">
-        <input class="qty-input" id="qtyInput" type="number" min="0" step="0.01"
-               placeholder="Enter Withdrawal Quantity" />
-        <div class="qty-right">
-          <span class="qty-unit">USDT</span>
-          <span class="qty-max" id="maxLink">MAX</span>
-        </div>
-      </div>
-
-      <div class="available-row">
-        Available <span class="value" id="availableVal">3.06 USDT</span>
-      </div>
-
-      <div class="info-card">
-        <div class="info-row">
-          <span>Minimum Withdrawal Quantity</span>
-          <span><span id="minQty">20</span> USDT</span>
-        </div>
-        <div class="info-row">
-          <span>Withdrawal Fee</span>
-          <span><span id="feeVal">0</span> USDT</span>
-        </div>
-        <div class="info-row">
-          <span>Received Quantity</span>
-          <span><span id="recvVal">0</span> USDT</span>
-        </div>
-      </div>
-
-      <button type="button" class="withdraw-btn" id="withdrawBtn">Withdraw</button>
-
-      <div class="reminder-title">Friendly Reminder</div>
-      <ol class="reminder-list">
-        <li>The minimum withdrawal amount is: <span class="reminder-em">20 USDT</span></li>
-        <li>Withdrawal fee: <span class="reminder-em">5%</span></li>
-        <li>Withdrawals will arrive within 2–120 hours.</li>
-        <li>After completing <span class="reminder-em">6</span> AI computing power tasks, you can apply for withdrawal.</li>
-        <li>Make sure your computer and browser are secure to prevent information from being tampered with or leaked.</li>
-        <li>Before withdrawing coins, please confirm whether the withdrawal address is safe and corresponds to the current currency. Once the address of a non‑TRC20 network is used, the platform cannot help to retrieve it. Please check carefully before withdrawing coins.</li>
-      </ol>
-    </main>
-  </div>
-
-  
-  <script src="wallet.js"></script>
-  <script>
-    (function() {
-      var qtyInput = document.getElementById('qtyInput');
-      var feeVal = document.getElementById('feeVal');
-      var recvVal = document.getElementById('recvVal');
-      var minQty = 20;
-      var maxAvailable = 0;
-      var maxLink = document.getElementById('maxLink');
-      var withdrawBtn = document.getElementById('withdrawBtn');
-      var availableVal = document.getElementById('availableVal');
-
-      var balance = 0;
-
-      function syncBalance() {
-        if (window.DemoWallet && typeof window.DemoWallet.getWallet === 'function') {
-          var w = DemoWallet.getWallet();
-          if (w && typeof w.balance === 'number') {
-            balance = w.balance;
-          }
+    if (backBtn) {
+      backBtn.addEventListener('click', function () {
+        if (window.history.length > 1) {
+          window.history.back();
         }
-        maxAvailable = balance;
-        if (availableVal) {
-          availableVal.textContent = balance.toFixed(2) + ' USDT';
-        }
+      });
+    }
+
+    var allTxs = [];
+    var filters = {
+      startDate: '',
+      endDate: '',
+      type: 'all',
+      currency: 'ALL'
+    };
+
+    function showEmpty() {
+      container.className = 'empty-state';
+      container.textContent = 'No bills yet.';
+    }
+
+    function renderBills(list) {
+      if (!list || !list.length) {
+        showEmpty();
+        return;
       }
 
-      function updateValues() {
-        var v = parseFloat(qtyInput.value);
-        if (isNaN(v) || v <= 0) {
-          feeVal.textContent = '0';
-          recvVal.textContent = '0';
-          return;
-        }
-        var fee = v * 0.05;
-        var received = v - fee;
-        feeVal.textContent = fee.toFixed(2);
-        recvVal.textContent = received.toFixed(2);
-      }
+      container.className = 'bill-list';
+      container.innerHTML = '';
 
-      if (qtyInput) {
-        qtyInput.addEventListener('input', updateValues);
-      }
+      list.forEach(function(tx) {
+        var item = document.createElement('div');
+        item.className = 'bill-item';
 
-      if (maxLink) {
-        maxLink.addEventListener('click', function() {
-          qtyInput.value = maxAvailable.toFixed(2);
-          updateValues();
+        var typeLabelText = tx.type === 'withdraw' ? 'Withdraw' :
+                            tx.type === 'deposit' ? 'Deposit' :
+                            tx.type === 'income' ? 'Income' :
+                            tx.type === 'swap' ? 'Swap' :
+                            (tx.type || 'Record');
+
+        var status = tx.status || 'PENDING';
+        var createdAt = tx.createdAt ? tx.createdAt.replace('T', ' ').slice(0, 19) : '';
+
+        var amount = (typeof tx.amount === 'number'
+          ? tx.amount.toFixed(2)
+          : String(tx.amount || '0'));
+        var currency = (tx.currency || filters.currency || 'USDT').toUpperCase();
+        var amountStr = amount + ' ' + currency;
+
+        var feeStr = typeof tx.fee === 'number' ? tx.fee.toFixed(2) + ' ' + currency : '';
+        var netStr = typeof tx.net === 'number' ? tx.net.toFixed(2) + ' ' + currency : '';
+
+        item.innerHTML =
+          '<div class="bill-main-row">' +
+            '<span class="bill-type">' + typeLabelText + '</span>' +
+            '<span class="bill-amount">' + amountStr + '</span>' +
+          '</div>' +
+          '<div class="bill-sub-row">' +
+            '<span class="bill-status">' + status + '</span>' +
+            (createdAt ? '<span class="bill-time">' + createdAt + '</span>' : '') +
+          '</div>' +
+          (feeStr || netStr
+            ? '<div class="bill-sub-row">' +
+                (feeStr ? '<span class="bill-fee">Fee: ' + feeStr + '</span>' : '') +
+                (netStr ? '<span class="bill-net">Net: ' + netStr + '</span>' : '') +
+              '</div>'
+            : '');
+
+        container.appendChild(item);
+      });
+    }
+
+    function applyFilters() {
+      // Always refresh from DemoWallet so new operations appear
+      if (window.DemoWallet && typeof window.DemoWallet.getTransactions === 'function') {
+        var latest = DemoWallet.getTransactions() || [];
+        allTxs = latest.slice().sort(function(a, b) {
+          if (!a.createdAt || !b.createdAt) return 0;
+          return a.createdAt < b.createdAt ? 1 : -1;
         });
       }
 
-      if (withdrawBtn) {
-        withdrawBtn.addEventListener('click', function() {
-          if (!window.DemoWallet || typeof window.DemoWallet.getWallet !== 'function' || typeof window.DemoWallet.withdraw !== 'function') {
-            alert('Internal error: wallet not available.');
-            return;
-          }
-
-          var v = parseFloat(qtyInput.value);
-          if (isNaN(v) || v <= 0) {
-            alert('Please enter a valid amount.');
-            return;
-          }
-
-          if (v < minQty) {
-            alert('The minimum withdrawal amount is ' + minQty + ' USDT.');
-            return;
-          }
-
-          if (v > balance) {
-            alert('Insufficient balance.');
-            return;
-          }
-
-          var wCheck = DemoWallet.getWallet();
-          if (!wCheck || typeof wCheck.totalIncome !== 'number' || wCheck.totalIncome < 6) {
-            alert('You can apply for withdrawal only after completing 6 AI computing power tasks.');
-            return;
-          }
-
-          var result = DemoWallet.withdraw(v);
-          if (!result) {
-            alert('Withdrawal failed, please try again.');
-            return;
-          }
-
-          syncBalance();
-          if (qtyInput) {
-            qtyInput.value = '';
-          }
-          updateValues();
-
-          alert('Withdrawal request submitted and is pending review.');
-        });
+      if (!allTxs.length) {
+        showEmpty();
+        return;
       }
 
-      // initial sync
-      syncBalance();
-      updateValues();
-    })();
-  </script>
+      var filtered = allTxs.filter(function(tx) {
+        var createdAt = tx.createdAt ? new Date(tx.createdAt) : null;
 
-<script src="auth.js"></script>
+        if (filters.startDate && createdAt) {
+          var start = new Date(filters.startDate + 'T00:00:00');
+          if (createdAt < start) return false;
+        }
+        if (filters.endDate && createdAt) {
+          var end = new Date(filters.endDate + 'T23:59:59');
+          if (createdAt > end) return false;
+        }
+
+        if (filters.type && filters.type !== 'all') {
+          if (!tx.type || tx.type.toLowerCase() !== filters.type) return false;
+        }
+
+        if (filters.currency && filters.currency.toUpperCase() !== 'ALL') {
+          var filterCurrency = filters.currency.toUpperCase();
+          var txCurrency = (tx.currency || 'USDT').toUpperCase();
+
+          if (tx.type && tx.type.toLowerCase() === 'swap') {
+            // currency looks like "USDT→USDC" for swaps: match if any side contains chosen currency
+            if (txCurrency.indexOf(filterCurrency) === -1) return false;
+          } else {
+            if (txCurrency !== filterCurrency) return false;
+          }
+        }
+
+        return true;
+      });
+
+      renderBills(filtered);
+    }
+
+    function loadTransactions() {
+      applyFilters();
+
+      if (!window.DemoWallet || typeof window.DemoWallet.getTransactions !== 'function') {
+        showEmpty();
+        return;
+      }
+
+      var txs = DemoWallet.getTransactions();
+      if (!txs || !txs.length) {
+        showEmpty();
+        return;
+      }
+
+      allTxs = txs.slice().sort(function(a, b) {
+        if (!a.createdAt || !b.createdAt) return 0;
+        return a.createdAt < b.createdAt ? 1 : -1;
+      });
+
+      applyFilters();
+    }
+
+    if (resetBtn) {
+      resetBtn.addEventListener('click', function() {
+        if (startInput) startInput.value = '';
+        if (endInput) endInput.value = '';
+        filters.startDate = '';
+        filters.endDate = '';
+        filters.type = 'all';
+        filters.currency = 'USDT';
+        if (typeLabel) typeLabel.textContent = 'All';
+        if (currencyLabel) currencyLabel.textContent = 'USDT';
+        applyFilters();
+      });
+    }
+
+    if (confirmBtn) {
+      confirmBtn.addEventListener('click', function() {
+        if (startInput) filters.startDate = startInput.value || '';
+        if (endInput) filters.endDate = endInput.value || '';
+        applyFilters();
+      });
+    }
+
+    if (typeRow) {
+      var typeOptions = ['all', 'deposit', 'withdraw', 'swap'];
+      var typeLabels = {
+        'all': 'All',
+        'deposit': 'Deposit',
+        'withdraw': 'Withdraw',
+        'swap': 'Swap'
+      };
+      var index = 0;
+
+      typeRow.addEventListener('click', function() {
+        index = (index + 1) % typeOptions.length;
+        var key = typeOptions[index];
+        filters.type = key;
+        if (typeLabel) typeLabel.textContent = typeLabels[key];
+        applyFilters();
+      });
+    }
+
+    if (currencyRow) {
+      var currencyOptions = ['ALL', 'USDT', 'BTC', 'ETH', 'USDC', 'TRX'];
+      var currencyIndex = 0;
+
+      currencyRow.addEventListener('click', function () {
+        currencyIndex = (currencyIndex + 1) % currencyOptions.length;
+        var cur = currencyOptions[currencyIndex];
+        filters.currency = cur;
+        if (currencyLabel) currencyLabel.textContent = cur;
+        applyFilters();
+      });
+    }
+
+    loadTransactions();
+  })();
+</script>
+
 <script src="common-nav.js"></script>
 </body>
 </html>
