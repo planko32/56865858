@@ -83,7 +83,7 @@
   
   <script src="wallet.js"></script>
   <script>
-    (function() {{
+    (function() {
       var qtyInput = document.getElementById('qtyInput');
       var feeVal = document.getElementById('feeVal');
       var recvVal = document.getElementById('recvVal');
@@ -95,41 +95,42 @@
 
       var balance = 0;
 
-      if (window.DemoWallet && typeof window.DemoWallet.getWallet === 'function') {
-        var w = DemoWallet.getWallet();
-        if (w && typeof w.balance === 'number') {
-          balance = w.balance;
+      function syncBalance() {
+        if (window.DemoWallet && typeof window.DemoWallet.getWallet === 'function') {
+          var w = DemoWallet.getWallet();
+          if (w && typeof w.balance === 'number') {
+            balance = w.balance;
+          }
+        }
+        maxAvailable = balance;
+        if (availableVal) {
+          availableVal.textContent = balance.toFixed(2) + ' USDT';
         }
       }
 
-      maxAvailable = balance;
-      if (availableVal) {
-        availableVal.textContent = balance.toFixed(2) + ' USDT';
-      }
-
-      function updateValues() {{
+      function updateValues() {
         var v = parseFloat(qtyInput.value);
-        if (isNaN(v) || v <= 0) {{
+        if (isNaN(v) || v <= 0) {
           feeVal.textContent = '0';
           recvVal.textContent = '0';
           return;
-        }}
+        }
         var fee = v * 0.05;
         var received = v - fee;
         feeVal.textContent = fee.toFixed(2);
         recvVal.textContent = received.toFixed(2);
-      }}
+      }
 
-      if (qtyInput) {{
+      if (qtyInput) {
         qtyInput.addEventListener('input', updateValues);
-      }}
+      }
 
-      if (maxLink) {{
-        maxLink.addEventListener('click', function() {{
+      if (maxLink) {
+        maxLink.addEventListener('click', function() {
           qtyInput.value = maxAvailable.toFixed(2);
           updateValues();
-        }});
-      }}
+        });
+      }
 
       if (withdrawBtn) {
         withdrawBtn.addEventListener('click', function() {
@@ -160,21 +161,13 @@
             return;
           }
 
-          var fee = v * 0.05;
-          var received = v - fee;
-
           var result = DemoWallet.withdraw(v);
           if (!result) {
             alert('Withdrawal failed, please try again.');
             return;
           }
 
-          balance = result.balance || 0;
-          maxAvailable = balance;
-          if (availableVal) {
-            availableVal.textContent = balance.toFixed(2) + ' USDT';
-          }
-
+          syncBalance();
           if (qtyInput) {
             qtyInput.value = '';
           }
@@ -183,11 +176,14 @@
           alert('Withdrawal request submitted and is pending review.');
         });
       }
-    }})();
+
+      // initial sync
+      syncBalance();
+      updateValues();
+    })();
   </script>
 
-
-  <script src="auth.js"></script>
+<script src="auth.js"></script>
 <script src="common-nav.js"></script>
 </body>
 </html>
